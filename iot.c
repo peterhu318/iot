@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
 
     //读取配置文件
     printf("读取配置文件中......");
-    readConfigFile("iot.cfg");
+    readConfigFile("/etc/iot/iot.cfg");
     printf("读取完成！\n");    
     // 读取命令行参数，优先级高于配置文件
     parse_para(argc,argv);
@@ -188,18 +188,29 @@ srand((unsigned)time(NULL));
         float sensor2_data = 30.02;
         float sensor3_data = 25.51;
         float sensor4_data = 30.02;
-    	sensor1_data = ll(I2CBUS_0,0x50);
-	sensor2_data = yl(I2CBUS_0,0x6d);
-	sensor3_data = ll(I2CBUS_1,0x50);
-	sensor4_data = yl(I2CBUS_1,0x6d);
-
+        float sensor5_data = 30.02;
+        float sensor6_data = 30.02;
+	pca9548a_select(0);
+    	sensor1_data = ll(I2CBUS_3,0x50);
+	pca9548a_select(1);
+	sensor2_data = ll(I2CBUS_3,0x50);
+	pca9548a_select(2);
+	sensor3_data = yl(I2CBUS_3,0x6d);
+	pca9548a_select(3);
+	sensor4_data = yl(I2CBUS_3,0x6d);
+	pca9548a_select(4);
+	sensor5_data = yl(I2CBUS_3,0x6d);
+	pca9548a_select(5);
+	sensor6_data = yl(I2CBUS_3,0x6d);
+	pca9548a_select(9);  //关闭所有i2c
+			     //
 sensor1_data+=rand()%30;
 sensor2_data+=rand()%40;
 sensor3_data+=rand()%50;
 sensor4_data+=rand()%60;
 
         //sprintf(payload, "{\"sensor1\": %.2f, \"sensor2\": %.2f}", sensor1_data, sensor2_data,sensor3_data,sensor4_data);
-        sprintf(payload, JSON_STR, sensor1_data, sensor2_data,sensor3_data,sensor4_data);
+        sprintf(payload, JSON_STR, sensor1_data, sensor2_data,sensor3_data,sensor4_data,sensor5_data,sensor6_data);
         pubmsg.payload = payload;
         pubmsg.payloadlen = strlen(payload);
         MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token);
@@ -208,7 +219,8 @@ sensor4_data+=rand()%60;
                (int)(TIMEOUT/1000), payload, TOPIC, CLIENTID);
         rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
 //        printf("Message with delivery token %d delivered\n", token);
-	//sleep(3);
+	display(sensor1_data, sensor2_data,sensor3_data,sensor4_data,sensor5_data,sensor6_data);
+	sleep(3);
     }
 
 destroy_exit:

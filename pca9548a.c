@@ -46,6 +46,7 @@ int pca9548a_select(int channel) {
 	return (int)data[0];
 }
 
+/*
 int main(int argn, char* argv[]) {
 	int channel;
 	int val;
@@ -55,4 +56,5 @@ int main(int argn, char* argv[]) {
 	printf("return val is %d",val);
 	return 0;
 }
+*/
 
